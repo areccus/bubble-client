@@ -65,11 +65,24 @@ const Form = () => {
     }
     formData.append("picturePath", values.picture.name)
 
+    const payload = {
+      userName: values.userName,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      password: values.password,
+      location: values.location,
+      occupation: values.occupation,
+      picture: values.picture,
+      picturePath: values.picturePath,
+    }
+
     const savedUserResponse = await fetch(
       "https://bubble-backend-5ewq.vercel.app/auth/register",
       {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       }
     );
     const savedUser = await savedUserResponse.json()
@@ -107,7 +120,7 @@ const Form = () => {
   return (
     <Formik
       onSubmit={handleFormSubmit}
-      initialValues={isLogin ? initialValuesLogin : initialValuesRegister}
+      initialValues={isRegister ? initialValuesLogin : initialValuesRegister}
       validationSchema={isLogin ? loginSchema : registerSchema}
     >
       {({
@@ -132,15 +145,13 @@ const Form = () => {
             {isRegister && (
               <>
                 <TextField
-                  label="User Name"
+                  label="Username"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.userName}
                   name="userName"
-                  error={
-                    Boolean(touched.userName) && Boolean(errors.userName)
-                  }
-                  helperText={touched.userName && errors.userName}
+                  error={Boolean(touched.password) && Boolean(errors.password)}
+                  helperText={touched.password && errors.password}
                   sx={{ gridColumn: "span 4" }}
                 />
                 <TextField
@@ -196,9 +207,13 @@ const Form = () => {
                   <Dropzone
                     acceptedFiles=".jpg,.jpeg,.png"
                     multiple={false}
-                    onDrop={(acceptedFiles) =>
-                      setFieldValue("picture", acceptedFiles[0])
-                    }
+                    onDrop={(acceptedFiles) => {
+                      const reader = new FileReader();
+                      reader.readAsDataURL(acceptedFiles[0]);
+                      reader.onload = () => {
+                        setFieldValue("picture", reader.result);
+                      }
+                    }}
                   >
                     {({ getRootProps, getInputProps }) => (
                       <Box

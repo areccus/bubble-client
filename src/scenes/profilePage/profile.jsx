@@ -2,7 +2,8 @@ import { Box, useMediaQuery} from '@mui/material'
 import { useEffect, useState }from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import Navbar from 'scenes/navbar'
+import BottomNavbar from 'scenes/navbar/bottomNavbar'
+import TopNavbar from 'scenes/navbar/topNavbar'
 import MyPostWidget from 'scenes/widgets/MyPostWidget'
 import PostsWidget from 'scenes/widgets/PostsWidget'
 import UserWidget from 'scenes/widgets/UserWidget'
@@ -10,6 +11,7 @@ import UserWidget from 'scenes/widgets/UserWidget'
 const ProfilePage = () => {
     const [user, setUser] = useState()
     const { userId } = useParams()
+    const { _id } = useSelector((state) => state.user)
     const token = useSelector((state) => state.token)
     const isNonMobileScreens = useMediaQuery('(min-width:1000px)')
 
@@ -23,13 +25,15 @@ const ProfilePage = () => {
     }
 
     useEffect(() => {
-        getUser() 
+        getUser() // eslint-disable-next-line
     }, []) 
 
+    console.log(`ID: ${_id}`)
+    console.log(`UserID ${userId}`)
     if (!user) return null
     return (
         <Box>
-            <Navbar/>
+            <TopNavbar/>
             <Box
             width='100%'
             padding='2rem 6%'
@@ -42,11 +46,12 @@ const ProfilePage = () => {
                 </Box>
                 <Box flexBasis={isNonMobileScreens ? '42%' : undefined}
                 mt={isNonMobileScreens ? undefined : '2rem'}>
-                    <MyPostWidget picturePath={user.picturePath}/>
+                    {userId === _id ? <MyPostWidget picturePath={user.picturePath}/> : undefined}
                     <Box  m='2rem 0 '/>
                     <PostsWidget userId={userId} isProfile/>
                 </Box>
             </Box>
+            <BottomNavbar/>
         </Box>
     )
 }
