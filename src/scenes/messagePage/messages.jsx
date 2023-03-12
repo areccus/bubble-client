@@ -63,7 +63,7 @@ const Messages = () => {
   }, [chatId, token]);
 
   return (
-    <Box >
+    <Box display='flex' flexDirection='column' alignItems='center' marginTop='20%'>
       <Box display='flex' flexDirection='column' alignItems='center'>
         {messages.map((message) => (
           <Box

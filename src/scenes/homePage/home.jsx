@@ -1,6 +1,5 @@
 import { Box, useMediaQuery } from "@mui/material"
 import { useSelector } from "react-redux"
-
 import MyPostWidget from 'scenes/widgets/MyPostWidget'
 import PostsWidget from "scenes/widgets/PostsWidget"
 
