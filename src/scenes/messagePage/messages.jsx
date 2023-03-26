@@ -17,7 +17,7 @@ const Messages = () => {
   const handleSubmit = async (evt) => {
     evt.preventDefault();
     try {
-      const response = await fetch(`https://bubble-backend-5ewq.vercel.app/chat/${chatId}/messages`, {
+       await fetch(`https://bubble-backend-5ewq.vercel.app/chat/${chatId}/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,8 +25,6 @@ const Messages = () => {
         },
         body: JSON.stringify({ userId: _id, message }),
       });
-      const data = await response.json();
-      console.log(data);
       setMessage('');
     } catch (error) {
       console.error(error);

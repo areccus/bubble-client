@@ -3,8 +3,6 @@ import {
     useTheme,
   } from "@mui/material";
   import {
-    Message,
-    Notifications,
     ArrowBack
   } from "@mui/icons-material";
   // import { useSelector } from "react-redux";

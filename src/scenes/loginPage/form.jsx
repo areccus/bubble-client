@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -7,14 +7,15 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined"
-import { Formik } from "formik"
-import * as yup from "yup"
-import { useNavigate } from "react-router-dom"
-import { useDispatch } from "react-redux"
-import { setLogin } from "state"
-import Dropzone from "react-dropzone"
-import FlexBetween from "components/FlexBetween"
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import { Formik } from "formik";
+import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setLogin } from "state";
+import Dropzone from "react-dropzone";
+import FlexBetween from "components/FlexBetween";
+import heic2any from 'heic2any'
 
 const registerSchema = yup.object().shape({
   userName: yup.string().required("required"),
@@ -50,46 +51,52 @@ const initialValuesLogin = {
 
 const Form = () => {
   const [pageType, setPageType] = useState("login");
-  const { palette } = useTheme()
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const isNonMobile = useMediaQuery("(min-width:600px)")
-  const isLogin = pageType === "login"
-  const isRegister = pageType === "register"
+  const { palette } = useTheme();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+  const isLogin = pageType === "login";
+  const isRegister = pageType === "register";
+
+  const convertHeicToJpeg = async (file) => {
+    if (file.type === "image/heic") {
+      try {
+        const jpegBlob = await heic2any({
+          blob: file,
+          toType: "image/jpeg",
+          quality: 0.8,
+        });
+        return new File([jpegBlob], file.name.replace(/\.heic$/i, ".jpg"), {
+          type: "image/jpeg",
+        });
+      } catch (error) {
+        console.error("Error converting HEIC to JPEG:", error);
+        return file;
+      }
+    }
+    return file;
+  }
 
   const register = async (values, onSubmitProps) => {
     // this allows us to send form info with image
-    const formData = new FormData()
+    const formData = new FormData();
     for (let value in values) {
-      formData.append(value, values[value])
+      formData.append(value, values[value]);
     }
-    formData.append("picturePath", values.picture.name)
-
-    const payload = {
-      userName: values.userName,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      email: values.email,
-      password: values.password,
-      location: values.location,
-      occupation: values.occupation,
-      picture: values.picture,
-      picturePath: values.picturePath,
-    }
+    formData.append("picturePath", values.picture.name);
 
     const savedUserResponse = await fetch(
       "https://bubble-backend-5ewq.vercel.app/auth/register",
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: formData,
       }
     );
-    const savedUser = await savedUserResponse.json()
-    onSubmitProps.resetForm()
+    const savedUser = await savedUserResponse.json();
+    onSubmitProps.resetForm();
 
     if (savedUser) {
-      setPageType("login")
+      setPageType("login");
     }
   };
 
@@ -99,8 +106,8 @@ const Form = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
-    const loggedIn = await loggedInResponse.json()
-    onSubmitProps.resetForm()
+    const loggedIn = await loggedInResponse.json();
+    onSubmitProps.resetForm();
     if (loggedIn) {
       dispatch(
         setLogin({
@@ -108,19 +115,19 @@ const Form = () => {
           token: loggedIn.token,
         })
       );
-      navigate("/home")
+      navigate("/home");
     }
   };
 
   const handleFormSubmit = async (values, onSubmitProps) => {
-    if (isLogin) await login(values, onSubmitProps)
-    if (isRegister) await register(values, onSubmitProps)
+    if (isLogin) await login(values, onSubmitProps);
+    if (isRegister) await register(values, onSubmitProps);
   };
 
   return (
     <Formik
       onSubmit={handleFormSubmit}
-      initialValues={isRegister ? initialValuesLogin : initialValuesRegister}
+      initialValues={isLogin ? initialValuesLogin : initialValuesRegister}
       validationSchema={isLogin ? loginSchema : registerSchema}
     >
       {({
@@ -144,14 +151,16 @@ const Form = () => {
           >
             {isRegister && (
               <>
-                <TextField
-                  label="Username"
+              <TextField
+                  label="User Name"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.userName}
                   name="userName"
-                  error={Boolean(touched.password) && Boolean(errors.password)}
-                  helperText={touched.password && errors.password}
+                  error={
+                    Boolean(touched.userName) && Boolean(errors.userName)
+                  }
+                  helperText={touched.userName && errors.userName}
                   sx={{ gridColumn: "span 4" }}
                 />
                 <TextField
@@ -207,12 +216,10 @@ const Form = () => {
                   <Dropzone
                     acceptedFiles=".jpg,.jpeg,.png"
                     multiple={false}
-                    onDrop={(acceptedFiles) => {
-                      const reader = new FileReader();
-                      reader.readAsDataURL(acceptedFiles[0]);
-                      reader.onload = () => {
-                        setFieldValue("picture", reader.result);
-                      }
+                    onDrop={async(acceptedFiles) => {
+                      const file = acceptedFiles[0]
+                      const convertedFile = await convertHeicToJpeg(file)
+                      setFieldValue("picture", convertedFile)
                     }}
                   >
                     {({ getRootProps, getInputProps }) => (
@@ -278,8 +285,8 @@ const Form = () => {
             </Button>
             <Typography
               onClick={() => {
-                setPageType(isLogin ? "register" : "login")
-                resetForm()
+                setPageType(isLogin ? "register" : "login");
+                resetForm();
               }}
               sx={{
                 textDecoration: "underline",
@@ -298,7 +305,7 @@ const Form = () => {
         </form>
       )}
     </Formik>
-  )
-}
+  );
+};
 
 export default Form;

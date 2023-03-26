@@ -39,7 +39,8 @@ const PostsWidget = ({ userId, isProfile = false }) => {
 
   return (
     <>
-      {posts.map(
+    {Array.isArray(posts) &&
+      posts.map(
         ({
           _id,
           userId,
@@ -65,8 +66,8 @@ const PostsWidget = ({ userId, isProfile = false }) => {
           />
         )
       )}
-    </>
+  </>
   );
 };
 
-export default PostsWidget;
+export default PostsWidget

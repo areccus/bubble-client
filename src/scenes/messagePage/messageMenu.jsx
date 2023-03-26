@@ -7,7 +7,7 @@ import MessageSearch from './messageSearch';
 
 const Chats = () => {
   const navigate = useNavigate();
-  const {  userName, _id } = useSelector((state) => state.user);
+  const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
   const [chatrooms, setChatrooms] = useState([]);
 
@@ -55,7 +55,6 @@ const Chats = () => {
           const chatName = room.messages.find((member) => member.userId !== _id)?.userName;
           const userPicturePath = room.messages.find(member => member.userId !== _id)?.userPicturePath;
           const lastMessage = getLastMessage(room.messages);
-          console.log(room)
           return (
             <Button sx={{padding: '2%', width: '100%', border: '1px solid white'}} key={room._id} onClick={() => navigate(`/messages/${room._id}`)}>
               <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', }}>

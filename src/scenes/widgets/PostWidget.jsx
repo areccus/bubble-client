@@ -25,8 +25,8 @@ const PostWidget = ({
   location,
   picturePath,
   userPicturePath,
-  likes,
-  comments
+  likes = {},
+  comments = []
 }) => {
   // Initializing the 'isComments' state variable with a default value of 'false'
   const [isComments, setIsComments] = useState(false);
@@ -36,8 +36,8 @@ const PostWidget = ({
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user._id);
 
-  // Determining whether the current user has liked the post or not
-  const isLiked = Boolean(likes[loggedInUserId]);
+  // Determining whether the current uszer has liked the post or not
+  const isLiked = likes && Boolean(likes[loggedInUserId]);
 
   // Counting the total number of likes on the post
   const likeCount = Object.keys(likes).length;
@@ -62,7 +62,6 @@ const PostWidget = ({
     const updatedPost = await response.json();
     dispatch(setPost({ post: updatedPost }));
   };
-
   return (
     // Wrapping the entire post widget in a reusable 'WidgetWrapper' component
     <WidgetWrapper m="2rem 0">
@@ -86,7 +85,7 @@ const PostWidget = ({
           height="auto"
           alt="post"
           style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
-          src={`https://bubble-backend-5ewq.vercel.app/assets/${picturePath}`}
+          src={picturePath}
         />
       )}
 

@@ -28,8 +28,6 @@ const ProfilePage = () => {
         getUser() // eslint-disable-next-line
     }, []) 
 
-    console.log(`ID: ${_id}`)
-    console.log(`UserID ${userId}`)
     if (!user) return null
     return (
         <Box>

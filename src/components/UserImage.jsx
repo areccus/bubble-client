@@ -8,7 +8,7 @@ const UserImage = ({image, size}) => {
             width={size}
             height={size}
             alt='user'
-            src={`https://bubble-backend-5ewq.vercel.app/assets/${image}`}
+            src={image}
             />
         </Box>
     )

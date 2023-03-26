@@ -23,12 +23,14 @@ import UserImage from "components/UserImage";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "state";
+import heic2any from 'heic2any'
 
 const MyPostWidget = ({ picturePath }) => {
   const dispatch = useDispatch();
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState(null);
   const [post, setPost] = useState("");
+  const currentPosts = useSelector((state) => state.posts)
   const { palette } = useTheme();
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
@@ -44,17 +46,44 @@ const MyPostWidget = ({ picturePath }) => {
       formData.append("picture", image);
       formData.append("picturePath", image.name);
     }
-
     const response = await fetch(`https://bubble-backend-5ewq.vercel.app/posts`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
-    const posts = await response.json();
-    dispatch(setPosts({ posts }));
+    const newPost = await response.json();
+    console.log(newPost);
+  
+    // Get the current list of posts from the Redux store;
+  
+    // Append the new post to the list
+    const updatedPosts = [...currentPosts, newPost];
+  
+    // Dispatch the setPosts action with the updated list
+    dispatch(setPosts({ posts: updatedPosts }));
+  
     setImage(null);
     setPost("");
   };
+
+  const convertHeicToJpeg = async (file) => {
+    if (file.type === "image/heic") {
+      try {
+        const jpegBlob = await heic2any({
+          blob: file,
+          toType: "image/jpeg",
+          quality: 0.8,
+        });
+        return new File([jpegBlob], file.name.replace(/\.heic$/i, ".jpg"), {
+          type: "image/jpeg",
+        });
+      } catch (error) {
+        console.error("Error converting HEIC to JPEG:", error);
+        return file;
+      }
+    }
+    return file;
+  }
 
   return (
     <Box
@@ -63,7 +92,7 @@ const MyPostWidget = ({ picturePath }) => {
     marginTop='15%'
     >
       <FlexBetween gap="1.5rem">
-        <UserImage image={picturePath} size='60px'/>
+        <UserImage image={picturePath} size='60px' />
         <InputBase
           placeholder="What's on your mind..."
           onChange={(e) => setPost(e.target.value)}
@@ -86,8 +115,12 @@ const MyPostWidget = ({ picturePath }) => {
           <Dropzone
             acceptedFiles=".jpg,.jpeg,.png"
             multiple={false}
-            onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
-          >
+            onDrop={async(acceptedFiles) => {
+              const file = acceptedFiles[0]
+              const convertedFile = await convertHeicToJpeg(file)
+              setImage(convertedFile)
+            }}
+            >
             {({ getRootProps, getInputProps }) => (
               <FlexBetween>
                 <Box
@@ -173,4 +206,4 @@ const MyPostWidget = ({ picturePath }) => {
   );
 };
 
-export default MyPostWidget;
+export default MyPostWidget
