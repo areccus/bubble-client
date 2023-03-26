@@ -36,36 +36,35 @@ const PostsWidget = ({ userId, isProfile = false }) => {
       getPosts();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
+  const sortedPosts = Array.isArray(posts) ? [...posts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) : [];
   return (
     <>
-    {Array.isArray(posts) &&
-      posts.map(
-        ({
-          _id,
-          userId,
-          userName,
-          description,
-          location,
-          picturePath,
-          userPicturePath,
-          likes,
-          comments,
-        }) => (
-          <PostWidget
-            key={_id}
-            postId={_id}
-            postUserId={userId}
-            name={`${userName}`}
-            description={description}
-            location={location}
-            picturePath={picturePath}
-            userPicturePath={userPicturePath}
-            likes={likes}
-            comments={comments}
-          />
-        )
-      )}
+    {sortedPosts.map(
+  ({
+    _id,
+    userId,
+    userName,
+    description,
+    location,
+    picturePath,
+    userPicturePath,
+    likes,
+    comments,
+  }) => (
+    <PostWidget
+      key={_id}
+      postId={_id}
+      postUserId={userId}
+      name={`${userName}`}
+      description={description}
+      location={location}
+      picturePath={picturePath}
+      userPicturePath={userPicturePath}
+      likes={likes}
+      comments={comments}
+    />
+  )
+)}
   </>
   );
 };
