@@ -14,6 +14,7 @@ import TopNavbar from 'scenes/navbar/topNavbar';
 import BottomNavbar from 'scenes/navbar/bottomNavbar';
 import { themeSettings } from './theme';
 import BackNavbar from 'scenes/navbar/backNavbar';
+import Settings from 'scenes/settings/settings';
 
 function App() {
   const location = useLocation();
@@ -37,9 +38,8 @@ function App() {
         <CssBaseline />
 
         {/* Show the top navbar if the current path is not the home or messages page */}
-        {location.pathname === '/' || location.pathname === '/messages' ? undefined : <TopNavbar />}
-        {location.pathname === '/messages' || location.pathname.startsWith('/messages/') ?  <BackNavbar/> : <TopNavbar/>}
-        
+        {location.pathname !== '/' && location.pathname !== '/messages' && !location.pathname.startsWith('/messages/') && location.pathname !== '/settings' ? <TopNavbar/> : <BackNavbar/>}
+
         {/* Define the app routes */}
         <Routes>
           <Route path="/" element={isAuth ? <Navigate to="/home" /> : <LoginPage />} />
@@ -48,6 +48,7 @@ function App() {
           <Route path="/messages" element={isAuth ? <MessageMenu /> : <Navigate to="/" />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/messages/:chatId" element={isAuth ? <Messages /> : <Navigate to="/" />} />
+          <Route path="/settings" element={isAuth ? <Settings /> : <Navigate to="/" />}/>
         </Routes>
 
         {/* Show the bottom navbar if the current path is not the home or messages page */}

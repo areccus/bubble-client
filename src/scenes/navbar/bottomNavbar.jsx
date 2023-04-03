@@ -58,7 +58,7 @@ const BottomNavbar = () => {
                 <Person sx={{fontSize: 25}}/>
             </IconButton>
             <IconButton>
-              <HomeRepairService/>
+              <HomeRepairService onClick={() => navigate('/settings')}/>
             </IconButton>
         </FlexBetween>
 

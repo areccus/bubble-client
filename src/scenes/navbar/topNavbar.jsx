@@ -63,7 +63,9 @@ const TopNavbar = () => {
         <IconButton>
           <Notifications sx={{fontSize: 25}}/>
         </IconButton>
-        <IconButton onClick={() => navigate('/messages')}>
+        <IconButton 
+        style={{ marginLeft: '10%'}}
+        onClick={() => navigate('/messages')}>
             <Message sx={{fontSize: 25}}/>
         </IconButton>
         </FlexBetween>
