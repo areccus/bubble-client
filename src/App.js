@@ -1,3 +1,5 @@
+// AT SOME POINT I NEED TO SWITCH THE MESSAGE SCHEMA TO HAVE THE WHOLE USER OBJECT IN MEMBERS
+
 import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -38,8 +40,8 @@ function App() {
         <CssBaseline />
 
         {/* Show the top navbar if the current path is not the home or messages page */}
-        {location.pathname !== '/' && location.pathname !== '/messages' && !location.pathname.startsWith('/messages/') && location.pathname !== '/settings' ? <TopNavbar/> : <BackNavbar/>}
-
+        {location.pathname === '/' ? undefined : (location.pathname !== '/messages' && !location.pathname.startsWith('/messages/') 
+        && location.pathname !== '/settings' ? <TopNavbar/> : <BackNavbar/>)}
         {/* Define the app routes */}
         <Routes>
           <Route path="/" element={isAuth ? <Navigate to="/home" /> : <LoginPage />} />

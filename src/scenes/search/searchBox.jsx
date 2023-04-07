@@ -41,15 +41,15 @@ const SearchBox = () => {
   return (
     <Box sx={{ marginTop: '15%', width: '100%' }}>
     <form onSubmit={handleSubmit} style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-      <TextField sx={{width: '70%', background: '#FFFFFF'}} placeholder="Search" variant="outlined" value={searchTerm} onChange={handleInputChange}/>
+      <TextField sx={{width: '70%'}} placeholder="Search" variant="outlined" value={searchTerm} onChange={handleInputChange}/>
     </form>
 
     <Box sx={{mt: 5, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}} >
    {searchResults.map((user) => (
         <Button key={user._id} onClick={() => navigate(`/profile/${user._id}`)}>
-        <Box sx={{ mt: 2, background: '#FFFFFF', border: '1px solid #ccc', width: '70vw', height: '20vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Box sx={{ mt: 2, border: '1px solid #ccc', width: '70vw', height: '20vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <UserImage image={user.picturePath} size='100px' />
-            <Typography color='black' fontSize='1.2rem' marginLeft='10%' variant="body1">{user.userName}</Typography>
+            <Typography fontSize='1.2rem' marginLeft='10%' variant="body1">{user.userName}</Typography>
         </Box>
         </Button>
       ))}

@@ -15,12 +15,11 @@ const Settings = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const theme = useTheme()
+    const {palette} = useTheme()
     // const neutralLight = theme.palette.neutral.light
     // const dark = theme.palette.neutral.dark
-    // const primaryLight = theme.palette.primary.light
+    const primaryMain = palette.primary.main
     // const alt = theme.palette.background.alt
-
     const handleChange = () => {
       dispatch(setMode());
     }
@@ -37,17 +36,17 @@ const Settings = () => {
           Dark Mode
         </Typography>
         <Switch
-        checked={theme.palette.mode === "dark"}
+        checked={palette.mode === "dark"}
         onChange={handleChange}
         color="primary"
         sx={{ fontSize: "25px" }}
         />
       </Box>
-      <Box>
+      <Box style={{paddingBottom: '2%', marginBottom: '2%', borderBottom: '1px solid #d4d9d6', display: 'flex', justifyContent: 'center'}}>
         <Typography 
         onClick={() => handleLogOut()}
-        style={{fontSize: '1.2rem', fontWeight: 'bold', paddingBottom: '2%', marginBottom: '2%',}}>
-          Log Out
+        style={{fontSize: '1.4rem', fontWeight: 'bold', color: primaryMain}}>
+          Sign Out
         </Typography>
       </Box>
     </Box>

@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, useTheme } from '@mui/material';
 import UserImage from 'components/UserImage'
 import MessageSearch from './messageSearch';
 
 const Chats = () => {
   const navigate = useNavigate();
   const { _id } = useSelector((state) => state.user);
+  const { palette } = useTheme()
   const token = useSelector((state) => state.token);
   const [chatrooms, setChatrooms] = useState([]);
 
@@ -46,24 +47,27 @@ const Chats = () => {
     const lastMessage = messages[messages.length - 1];
     return `${lastMessage.userName}: ${lastMessage.message}`;
   }
-
+  console.log(chatrooms)
   return (
-    <Box>
+    <Box style={{paddingTop: '10%'}}>
       <MessageSearch />
       <Box>
         {chatrooms.map((room) => {
-          const chatName = room.messages.find((member) => member.userId !== _id)?.userName;
-          const userPicturePath = room.messages.find(member => member.userId !== _id)?.userPicturePath;
+          const chatName = room.members.find((member) => member.userId !== _id)?.userName
+          const userPicturePath = room.members.find(member => member.userId !== _id)?.userPicturePath;
           const lastMessage = getLastMessage(room.messages);
           return (
-            <Button sx={{padding: '2%', width: '100%', border: '1px solid white'}} key={room._id} onClick={() => navigate(`/messages/${room._id}`)}>
-              <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', }}>
+            <Button sx={{padding: '2%', width: '100%', textAlign: 'left'}} key={room._id} onClick={() => navigate({
+              pathname: `/messages/${room._id}`,
+              search: `?chatroom=${JSON.stringify(room)}`,
+            })}>
+              <Box sx={{ width: '100%', display: 'flex', alignItems: 'center'}}>
               <UserImage image={userPicturePath} size="70px" />
-                <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center', marginLeft: '3%' }}>
-                  <Typography color="black" fontSize="1.2rem" marginLeft="10%" variant="body1">
+                <Box sx={{ display: 'flex', flexDirection: 'column', marginLeft: '3%', alignItems: 'flex-start'}}>
+                  <Typography fontSize="1.2rem"  variant="body1">
                     {chatName}
                   </Typography>
-                <Typography color="black" fontSize="0.7rem" variant="body1">
+                <Typography color={palette.neutral.main} fontSize="0.7rem" variant="body1">
                   {lastMessage}
                 </Typography>
                 </Box>

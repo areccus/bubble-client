@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Box, Button, TextField, IconButton, Typography } from '@mui/material';
+import { Box, Button, TextField, IconButton, Typography, useTheme} from '@mui/material';
 import { useSelector } from 'react-redux';
 import UserImage from 'components/UserImage';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +8,8 @@ import ClearIcon from '@mui/icons-material/Clear';
 const MessageSearch = () => {
   const navigate = useNavigate();
   const token = useSelector((state) => state.token);
-  const { _id } = useSelector((state) => state.user)
+  const { palette } = useTheme()
+  const { _id, userName, picturePath } = useSelector((state) => state.user)
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const inputRef = useRef(null);
@@ -56,7 +57,15 @@ const MessageSearch = () => {
 
   const handleSelectUser = async (user) => {
     try {
-      const members = [_id, user._id];
+      const members = [{
+        userId: _id,
+        userName: userName,
+        userPicturePath: picturePath
+      }, {
+        userId: user._id,
+        userName: user.userName,
+        userPicturePath: user.picturePath
+      }]
       const chatId = generateRandomString(10); // Generate a random 10-character string for the chatId
       
       const response = await fetch(`https://bubble-backend-5ewq.vercel.app/chat/${chatId}`, {
@@ -84,7 +93,7 @@ const MessageSearch = () => {
           variant="outlined"
           value={searchTerm}
           onChange={handleInputChange}
-          sx={{ width: '70%', background: '#FFFFFF', padding: '1.5%' }}
+          sx={{ width: '90%', backgroundColor: palette.background.alt }}
           InputProps={{
             endAdornment:
               searchTerm.length > 0 && (
@@ -99,9 +108,9 @@ const MessageSearch = () => {
       <Box sx={{ mt: 5, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
         {searchResults.map((user) => (
           <Button key={user._id} onClick={() => handleSelectUser(user)}>
-            <Box sx={{ mt: 2, background: '#FFFFFF', border: '1px solid #ccc', width: '70vw', height: '10vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Box sx={{ mt: 2,  border: '1px solid #ccc', width: '70vw', height: '10vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <UserImage image={user.picturePath} size="60px" />
-              <Typography color="black" fontSize="1.2rem" marginLeft="10%" variant="body1">
+              <Typography fontSize="1.2rem" marginLeft="10%" variant="body1">
                 {user.userName}
               </Typography>
             </Box>
